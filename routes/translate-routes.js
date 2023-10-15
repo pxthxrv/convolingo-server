@@ -3,11 +3,12 @@ const router = express.Router();
 const {
     getDefinition,
     addDefinition,
-} = require("../controllers/translation-controller");
+} = require("../controllers/translate-controller");
 
-// POST | Record usage 
-router.route("/").post(getDefinition);
-// GET user usage
-router.route("/:vocabId").get(addDefinition);
+// POST | Record definition 
+router.route("/").post(addDefinition);
+
+// GET vocab definition
+// router.route("/:vocabId").get(getDefinition);
 
 module.exports = router;

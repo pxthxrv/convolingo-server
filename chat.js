@@ -22,5 +22,4 @@ const newChat = await openai.chat.completions.create({
   });
 
 console.log(chatCompletion.choices[0].message.content);
-
 console.log(newChat.choices[0].message.content);

@@ -6,6 +6,7 @@ const authKey = process.env.DEEPL_KEY;
 const translator = new deepl.Translator(authKey);
 
 (async () => {
-    const result = await translator.translateText('Hello, world!', null, 'de');
+    const result = await translator.translateText('Hello', null, 'de');
     console.log(result.text); 
+    console.log(result)
 })();

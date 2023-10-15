@@ -3,11 +3,10 @@ const router = express.Router();
 const {
     userRegistration,
     userLogin,
-} = require("../controllers/user-controller");
+} = require("../controllers/auth-controller");
 
 // POST user registration
-router.route("/register").post(userRegistration);
-
+router.route("/signup").post(userRegistration);
 // POST user login
 router.route("/login").post(userLogin);
 
