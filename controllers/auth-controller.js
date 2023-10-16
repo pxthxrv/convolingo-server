@@ -1,15 +1,24 @@
 const knex = require("knex")(require("../knexfile"));
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT; // Consider using environment variables for security
+const JWT_SECRET = process.env.JWT;
 
 const checkAuth = async (req, res) => {
-    const user = await knex('Users').where('id', req.user.id).first();
+    try {
+        const userData = await knex('Users')
+            .join('Languages', 'Users.target_language', '=', 'Languages.id')
+            .select('Users.*', 'Languages.display_name as target_language_display')
+            .where('Users.id', req.user.id)
+            .first();
 
-    if (user) {
-        res.json({ isAuthenticated: true, user: { username: user.username, user_id: user.id } });
-    } else {
-        res.status(404).json({ error: "User not found" });
+        if (userData) {
+            const { difficulty, level, password_hash, ...filteredUser } = userData;
+            res.json({ isAuthenticated: true, user: filteredUser });
+        } else {
+            res.status(404).json({ error: "User not found" });
+        }
+    } catch (error) {
+        res.status(500).json({ error: "Internal server error", details: error.message });
     }
 };
 
