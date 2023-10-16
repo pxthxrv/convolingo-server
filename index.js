@@ -1,19 +1,36 @@
 const express = require("express");
+const session = require('express-session');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const cors = require("cors");
+const cookieParser = require('cookie-parser');
 
 const { PORT } = require("./config/configManager");
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173", // front end port
+    credentials: true
+}));
 app.use(express.json());
 app.use(helmet());
 app.use(morgan('dev'));
+app.use(cookieParser());
 
-// USER TABLE
+app.use(session({
+    secret: 'your_secret_key',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }
+  }));
+
+// AUTHORIZE
 const authRoutes = require('./routes/auth-routes');
 app.use('/auth', authRoutes);
+
+// USER TABLE
+const userRoutes = require('./routes/user-routes');
+app.use('/user', userRoutes);
 
 // LANGUAGES TABLE
 const languageRoutes = require('./routes/language-routes');
