@@ -2,9 +2,12 @@ const knex = require("knex")(require("../knexfile"));
 
 const getUser = async (req, res) => {
   const userId = req.params.id;
-
   try {
-    const user = await knex("Users").where("id", userId).first();
+    const user = await knex("Users") //.where("id", userId).first();
+    .leftJoin('Languages', 'Users.target_language', '=', 'Languages.id') // Using leftJoin here
+    .select('Users.*', 'Languages.display_name as target_language_display')
+    .where('Users.id', userId)
+    .first();
 
     if (user) {
       res.status(200).json(user);

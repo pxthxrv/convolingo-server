@@ -10,6 +10,6 @@ const {
 router.route("/").post(handleChatInteraction);
 
 // GET user usage
-// router.route("/:interactionId").get(getInteraction);
+router.route("/history/:userId").get(getInteraction);
 
 module.exports = router;

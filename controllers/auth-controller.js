@@ -6,8 +6,8 @@ const JWT_SECRET = process.env.JWT;
 const checkAuth = async (req, res) => {
     try {
         const userData = await knex('Users')
-            .join('Languages', 'Users.target_language', '=', 'Languages.id')
-            .select('Users.*', 'Languages.display_name as target_language_display')
+            // .join('Languages', 'Users.target_language', '=', 'Languages.id')
+            // .select('Users.*', 'Languages.display_name as target_language_display')
             .where('Users.id', req.user.id)
             .first();
 
@@ -16,9 +16,11 @@ const checkAuth = async (req, res) => {
             res.json({ isAuthenticated: true, user: filteredUser });
         } else {
             res.status(404).json({ error: "User not found" });
+            console.log(error);
         }
     } catch (error) {
         res.status(500).json({ error: "Internal server error", details: error.message });
+        console.log(error);
     }
 };
 
@@ -40,6 +42,10 @@ const userRegistration = async (req, res) => {
         }).returning('id'); 
 
         const userId = result[0];
+
+            // Generate token for sign in
+    const token = jwt.sign({ id: userId, username: username }, JWT_SECRET, { expiresIn: '1h' });
+
 
         res.cookie('token', token, {
             httpOnly: true,

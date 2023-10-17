@@ -1,9 +1,7 @@
 function isValidResponse(response) {
-    if (typeof response !== "string" || response.length > 1500) {
+    if (typeof response !== "string") {
         return false;
     }
-
-    // more validation...
 
     return true;
 }

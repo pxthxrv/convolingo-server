@@ -5,6 +5,26 @@ const openai = new OpenAI({
   apiKey: process.env.API_GPT_KEY
 });
 
+const getInteraction = async (req, res) => {
+  const userId = parseInt(req.params.userId);
+
+  if (!userId) {
+      return res.status(400).json({ error: "User ID is required." });
+  }
+
+  try {
+      const chatHistory = await knex('Interactions')
+          .where('user_id', userId)
+          .orderBy('id', 'desc')
+          .limit(30);
+
+      res.status(200).json(chatHistory);
+  } catch (error) {
+      console.error("Error fetching chat history:", error);
+      res.status(500).json({ error: "Failed to fetch chat history." });
+  }
+};
+
 const handleChatInteraction = async (req, res) => {
   const { userMessage } = req.body;
 
@@ -44,5 +64,6 @@ const handleChatInteraction = async (req, res) => {
 };
 
 export {
+  getInteraction,
   handleChatInteraction
 };
