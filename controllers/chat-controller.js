@@ -9,9 +9,13 @@ const openai = new OpenAI({
 });
 
 const handleChatInteraction = async (req, res) => {
-  const { userMessage, user_id, language, cefrLevel } = req.body;
+  const { userMessage, user_id, language, cefrLevel, words } = req.body;
 
 console.log(language)
+
+const stringifiedWords = JSON.stringify(words);
+
+console.log()
 
   // INITIAL VALIDATION
   if (!userMessage || !user_id) {
@@ -29,6 +33,7 @@ console.log(language)
     Your response will not exceed 3 sentences. 
     You should always respond in ${language}.
     Your role is not that of a chat assistant but as a pedestrian. You do not need to help.
+    You must incorporate one of the words from this list in your response: ${stringifiedWords}.
     You are not a chat bot. You are a person.
     The user message starts now:
   `;
@@ -36,7 +41,7 @@ console.log(language)
   try {
     const chatResponse = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
-      presence_penalty: 2.0,
+      presence_penalty: 1.5,
       messages: [
         { role: "system", content: `${constraints}` },
         { role: "user", content: `${userMessage}` }
